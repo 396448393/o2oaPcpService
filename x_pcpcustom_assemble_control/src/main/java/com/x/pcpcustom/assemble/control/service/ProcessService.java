@@ -94,7 +94,6 @@ public class ProcessService {
         CreateProcessReturnEntity retData=new CreateProcessReturnEntity();
         retData.setMessage(retType);
         retData.setWorkId(workId);
-
         //读取配置信息中的单号id
 //        JsonArray jsonArray = o2oaService.getFormIdArrayById(processId);
 //        String serialNumberId=null;
@@ -124,14 +123,21 @@ public class ProcessService {
         return retData;
     }
     //上传文件
-    public void uploadFile(String xtoken,String work,String fileName,String fileUrl) throws Exception {
+    public Map<String,String> uploadFile(String xtoken,String workId,String loginName,JsonObject file) throws Exception {
 
         String pathUrl=this.serverPathUrl;
         String functionUrl="/x_processplatform_assemble_surface/jaxrs/attachment/upload/work/";
+        Map<String,String> retMap=new HashMap<>();
         try {
+            String attachment = o2oaService.getAttachmentIdByWorkId(workId,xtoken);
+            if(attachment==null || "".equals(attachment)){
+                throw new Exception("读取配置信息中的附件标识为空！");
+            }
+            String fileName=file.get("filename").getAsString();
+            String fileUrl=file.get("filepath").getAsString();
             Map<String,String> uploadParams = new LinkedHashMap<String, String>();
             uploadParams.put("fileName", fileName);
-            uploadParams.put("site", "attachment");//=====================
+            uploadParams.put("site", attachment);//=====================
             uploadParams.put("extraParam","");
 
             Map<String, String> headMap = new HashMap<String, String>();
@@ -139,12 +145,28 @@ public class ProcessService {
             headMap.put("accept", "*/*");
             headMap.put("connection", "Keep-Alive");
             headMap.put("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-            String strurl = "http://"+pathUrl+functionUrl + work;
-            HttpClientUtils.getInstance().uploadFileImpl(
+            String strurl = "http://"+pathUrl+functionUrl + workId;
+            String retStr = HttpClientUtils.getInstance().uploadFileImpl(
                     strurl, fileUrl,
                     "file", uploadParams, headMap);
+            JSONObject jsonObject = JSONObject.parseObject(retStr);
+            String type=jsonObject.getString("type");
+            String attachmentId=null;
+
+            if("success".equals(type)){
+                JSONObject dataJson=jsonObject.getJSONObject("data");
+                attachmentId=dataJson.getString("id");
+                retMap.put("fileName",fileName);
+                retMap.put("attachmentId",attachmentId);
+            }else{
+                retMap.put("fileName",fileName);
+                retMap.put("type",type);
+            }
+            return retMap;
         } catch (Exception e) {
             e.printStackTrace();
+            retMap.put("massage",e.getMessage())
+            return retMap;
         }
     }
 }

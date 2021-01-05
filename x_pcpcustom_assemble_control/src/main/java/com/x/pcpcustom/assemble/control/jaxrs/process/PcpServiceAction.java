@@ -15,6 +15,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.pcpcustom.assemble.control.action.ActionCreateProcess;
 import com.x.pcpcustom.assemble.control.action.ActionLogin;
+import com.x.pcpcustom.assemble.control.action.ActionUploadProcessFiles;
 import com.x.pcpcustom.assemble.control.jaxrs.sample.*;
 
 import org.json.JSONObject;
@@ -85,27 +86,24 @@ public class PcpServiceAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 //
-//	@JaxrsMethodDescribe( value = "上传表单附件接口", action = ActionUploadProcessFiles.class )
-//	@POST
-//	@Path("attachment/update/{attachFormId}/work/{workId}")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("附件表单标识") @PathParam("attachFormId") String attachFormId,
-//			@JaxrsParameterDescribe("流程实例标识") @PathParam("workId") String workId,
-//			@JaxrsParameterDescribe("附件信息") JsonElement jsonElement ) {
-//		ActionResult<ActionUploadProcessFiles.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-////			result = new ActionUpdate().execute( request, effectivePerson, id, jsonElement );
-//			String ret = "上传表单附件接口调用成功！"+workId;
+	@JaxrsMethodDescribe( value = "上传表单附件接口", action = ActionUploadProcessFiles.class )
+	@POST
+	@Path("attachment/update")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("附件信息") JsonElement jsonElement ) {
+		ActionResult<ActionUploadProcessFiles.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUploadProcessFiles().execute( request, effectivePerson, jsonElement.getAsJsonObject() );
 //			result.setMessage(ret);
-//		} catch (Exception e) {
-//			logger.error(e, effectivePerson, request, null);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//	}
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 
 }

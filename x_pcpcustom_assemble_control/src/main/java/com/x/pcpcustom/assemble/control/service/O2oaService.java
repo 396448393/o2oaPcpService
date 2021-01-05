@@ -2,28 +2,67 @@ package com.x.pcpcustom.assemble.control.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.x.pcpcustom.assemble.control.Business;
 import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
-import org.json.JSONObject;
+
 
 public class O2oaService {
-    //根据workid获取$work流程数据
+    //根据workid获取流程单号
     public String getDataByWorkId(String workId,String dataId,String xtoken) throws Exception {
+        String retData=null;
+//        String pathUrl=getPathUrl();
+//        String functionUrl="/x_processplatform_assemble_surface/jaxrs/data/work/";
+//        String path = "http://" + pathUrl + functionUrl+workId;
+//
+//        String retStr =  HttpClientUtils.getInstance().sendGet(path,xtoken);
+//        com.alibaba.fastjson.JSONObject jsonObject= JSON.parseObject(retStr);
+//        String retType=jsonObject.getString("type");
+//        if("success".equals(retType)){
+//            com.alibaba.fastjson.JSONObject jsonData=jsonObject.getJSONObject("data");
+//            com.alibaba.fastjson.JSONObject workData=jsonData.getJSONObject("$work");
+//            retData=workData.getString(dataId);
+//        }
+        JSONObject retJson=this.getWorkInfoOrWorkDataByWorkId(workId,"work",xtoken);
+        if(retJson!=null){
+            retData=retJson.getString(dataId);
+        }
+        return retData;
+    }
+    //根据workid获取data流程数据
+    public String getProcessDataByWorkId(String workId,String dataId,String xtoken) throws Exception {
         String pathUrl=getPathUrl();
         String functionUrl="/x_processplatform_assemble_surface/jaxrs/data/work/";
         String path = "http://" + pathUrl + functionUrl+workId;
         String retData=null;
         String retStr =  HttpClientUtils.getInstance().sendGet(path,xtoken);
-        com.alibaba.fastjson.JSONObject jsonObject= JSON.parseObject(retStr);
+        JSONObject jsonObject= JSON.parseObject(retStr);
         String retType=jsonObject.getString("type");
         if("success".equals(retType)){
-            com.alibaba.fastjson.JSONObject jsonData=jsonObject.getJSONObject("data");
-            com.alibaba.fastjson.JSONObject workData=jsonData.getJSONObject("$work");
-            retData=workData.getString(dataId);
-
-
+            JSONObject jsonData=jsonObject.getJSONObject("data");
+            //com.alibaba.fastjson.JSONObject workData=jsonData.getJSONObject("$work");
+            retData=jsonData.getString(dataId);
+        }
+        return retData;
+    }
+    /**根据workid获取流程信息和流程数据
+     * 参数 ： workId
+     *  dataType: 数据类型 work  或者 data
+     *  xtoken:
+     */
+    public JSONObject getWorkInfoOrWorkDataByWorkId(String workId, String dataType, String xtoken) throws Exception {
+        String pathUrl=getPathUrl();
+        String functionUrl="/x_processplatform_assemble_surface/jaxrs/work/workorworkcompleted/";
+        String path = "http://" + pathUrl + functionUrl+workId;
+        JSONObject retData=null;
+        String retStr =  HttpClientUtils.getInstance().sendGet(path,xtoken);
+        JSONObject jsonObject= JSON.parseObject(retStr);
+        String retType=jsonObject.getString("type");
+        if("success".equals(retType)){
+            JSONObject dataJson=jsonObject.getJSONObject("data");
+            retData=dataJson.getJSONObject(dataType);
         }
         return retData;
     }
@@ -35,7 +74,7 @@ public class O2oaService {
         String path = "http://" + pathUrl + functionUrl+workId+"/mockputtopost";
         JSONObject result = new JSONObject();
         result.put(dataId, dataValue);
-        String strflow =  HttpClientUtils.getInstance().sendPost2(path,xtoken,result.toString());
+        String strflow =  HttpClientUtils.getInstance().sendPost2(path,xtoken,result.toJSONString());
         return strflow;
     }
     //根据人员信息获取身份信息
@@ -46,13 +85,13 @@ public class O2oaService {
         String path = "http://" + pathUrl + functionUrl+person;
         String retIdentity=null;
         String retStr =  HttpClientUtils.getInstance().sendGet(path,xtoken);
-        com.alibaba.fastjson.JSONObject jsonObject= JSON.parseObject(retStr);
+        JSONObject jsonObject= JSON.parseObject(retStr);
         String retType=jsonObject.getString("type");
         if("success".equals(retType)){
-            com.alibaba.fastjson.JSONObject jsonData=jsonObject.getJSONObject("data");
+            JSONObject jsonData=jsonObject.getJSONObject("data");
             JSONArray identityList =jsonData.getJSONArray("woIdentityList");
             if(identityList.size()!=0){
-                com.alibaba.fastjson.JSONObject identityObj=identityList.getJSONObject(0);
+                JSONObject identityObj=identityList.getJSONObject(0);
                 retIdentity=identityObj.getString("distinguishedName");
             }
         }
@@ -76,6 +115,33 @@ public class O2oaService {
             String tempName=tempJsonObj.get("processName").getAsString();
             if(tempName.indexOf(processName)!=-1){
                 return tempJsonObj.get("processId").getAsString();
+            }
+        }
+        return null;
+    }
+    //附件上传中根据workId获取配置信息中的附件id
+    public String getAttachmentIdByWorkId(String workId,String xtoken) throws Exception {
+        String processId = this.getProcessIdByworkId(workId,xtoken);
+        return this.getAttachmentIdByProcessId(processId);
+    }
+    //根据workId获取流程id
+    public String getProcessIdByworkId(String workId,String xtoken) throws Exception {
+        JSONObject retJson = this.getWorkInfoOrWorkDataByWorkId(workId,"work",xtoken);
+        String processId=null;
+        processId=retJson.getString("process");
+        return processId;
+    }
+    //根据流程id读取配置信息中的附件id
+    public String getAttachmentIdByProcessId(String processId) throws Exception {
+        if(processId==null || "".equals(processId)){
+            throw new Exception("获取流程id为空！");
+        }
+        JsonArray jsonArray = Business.readConfig("process").get("value").getAsJsonArray();
+        for(int i=0;i<jsonArray.size();i++){
+            JsonObject tempJsonObj=jsonArray.get(i).getAsJsonObject();
+            String tempid=tempJsonObj.get("processId").getAsString();
+            if(processId.equals(tempid)){
+                return tempJsonObj.get("site").getAsString();
             }
         }
         return null;
