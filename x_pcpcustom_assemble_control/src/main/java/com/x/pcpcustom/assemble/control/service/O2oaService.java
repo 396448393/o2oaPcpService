@@ -9,7 +9,7 @@ import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
 import org.json.JSONObject;
 
 public class O2oaService {
-    //根据workid获取数据
+    //根据workid获取$work流程数据
     public String getDataByWorkId(String workId,String dataId,String xtoken) throws Exception {
         String pathUrl=getPathUrl();
         String functionUrl="/x_processplatform_assemble_surface/jaxrs/data/work/";
@@ -20,6 +20,10 @@ public class O2oaService {
         String retType=jsonObject.getString("type");
         if("success".equals(retType)){
             com.alibaba.fastjson.JSONObject jsonData=jsonObject.getJSONObject("data");
+            com.alibaba.fastjson.JSONObject workData=jsonData.getJSONObject("$work");
+            retData=workData.getString(dataId);
+
+
         }
         return retData;
     }
@@ -88,5 +92,24 @@ public class O2oaService {
 //        }
 //        return null;
 //    }
-
+    /**
+     * 分割字符串，如果开始位置大于字符串长度，返回空
+     *
+     * @param str
+     *            原始字符串
+     * @param f
+     *            开始位置
+     * @param t
+     *            结束位置
+     * @return
+     */
+    public static String substring(String str, int f, int t) {
+        if (f > str.length())
+            return null;
+        if (t > str.length()) {
+            return str.substring(f, str.length());
+        } else {
+            return str.substring(f, t);
+        }
+    }
 }

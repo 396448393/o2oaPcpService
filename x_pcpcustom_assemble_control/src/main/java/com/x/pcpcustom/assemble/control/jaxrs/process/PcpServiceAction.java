@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Path("pcp")
+@Path("process/pcp")
 @JaxrsDescribe("PCP平台外部调用服务")
 public class PcpServiceAction extends StandardJaxrsAction{
 

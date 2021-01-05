@@ -34,24 +34,9 @@ public class ActionCreateProcess extends BaseAction {
 		String startProcessPerson= jsonObject.get("startProcessPerson").getAsString();
 		JsonObject dataJson= jsonObject.get("data").getAsJsonObject();
 		ProcessService processService=new ProcessService();
-		//获取xtoken
+		//创建流程
 		CreateProcessReturnEntity retData=processService.createProcess(processName,title,xtoken,startProcessPerson,dataJson);
-//		if( StringUtils.isEmpty( wi.getName() )) {
-//			throw new ExceptionSampleEntityClassNameEmpty();
-//		}
-//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-//			SampleEntityClassName sampleEntityClassName = Wi.copier.copy( wi );
-//			//启动事务
-//			emc.beginTransaction( SampleEntityClassName.class );
-//			//校验对象
-//			emc.check( sampleEntityClassName, CheckPersistType.all );
-//			//提交事务
-//			emc.commit();
-//
-//			Wo wo = new Wo(sampleEntityClassName.getId());
-//			result.setData(wo);
-//		}
-		logger.info("流程返回数据：",retData);
+
 		Wo wo = new Wo(retData);
 		result.setData(wo);
 		return result;

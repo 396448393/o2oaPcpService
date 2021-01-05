@@ -73,8 +73,9 @@ public class ProcessService {
         result.put("latest", false);
         result.put("title", title);
         result.put("identity", identity);
-
-        JSONObject department = new JSONObject();
+        //将参数中的表单项放入
+        String formDataJsonStr=formData.toString();
+        JSONObject department = JSON.parseObject(formDataJsonStr);
         department.put("subject", title);
         result.put("data", department);
         //请求创建流程
@@ -110,7 +111,14 @@ public class ProcessService {
 //            throw new Exception("读取配置信息中的单号id失败或为空！");
 //        }
         //获取表单单号
-        String serialNumber = o2oaService.getDataByWorkId(workId,"serialNumber",xtoken);
+        String serial = o2oaService.getDataByWorkId(workId,"serial",xtoken);
+        String serialNumber=null;
+        if(serial!=null && !"".equals(serial)){
+            String str1=o2oaService.substring(serial,0,4);
+            String str2=o2oaService.substring(serial,4,12);
+            String str3=o2oaService.substring(serial,12,serial.length());
+            serialNumber=str1+"-"+str2+"-"+str3;
+        }
         retData.setSerialNumber(serialNumber);
 
         return retData;
