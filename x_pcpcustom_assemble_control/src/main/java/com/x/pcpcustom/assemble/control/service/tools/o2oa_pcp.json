@@ -1,0 +1,29 @@
+{
+    "runPath":{
+        "value": "dev"
+    },
+    "serverPath":{
+            "value": {
+                "prod":{
+                    "ip":"10.80.62.1",
+                    "port":"20000"
+                },
+                "test":{
+                    "ip":"10.191.56.104",
+                    "port":"20000"
+                },
+                "dev":{
+                    "ip":"192.168.79.136",
+                    "port":"80"
+                }
+            }
+        },
+    "process":{
+        "value": [
+            {"processName":"生产系统业务操作申请流程","processId":"7df44abf-d2b6-4059-841b-c3dbeb594acf","site":"attachment_1"}
+        ]
+    },
+    "startPerson":{
+        "value": ["hcwang"]
+    }
+}
