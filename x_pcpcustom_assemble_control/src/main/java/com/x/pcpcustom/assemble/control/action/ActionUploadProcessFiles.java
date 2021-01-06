@@ -12,12 +12,14 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.pcpcustom.assemble.control.action.entity.UploadFileParamEntity;
+import com.x.pcpcustom.assemble.control.action.entity.UploadFileReturnEntity;
 import com.x.pcpcustom.assemble.control.jaxrs.sample.BaseAction;
 import com.x.pcpcustom.assemble.control.service.ProcessService;
 import com.x.pcpcustom.core.entity.SampleEntityClassName;
 import org.bouncycastle.operator.MacCalculatorProvider;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,13 +39,13 @@ public class ActionUploadProcessFiles extends BaseAction {
 		JsonArray fileList= jsonObject.get("fileList").getAsJsonArray();
 		ProcessService processService=new ProcessService();
 		//上传附件
+		UploadFileReturnEntity [] retArray=new UploadFileReturnEntity[fileList.size()];
 		for(int i=0;i<fileList.size();i++){
 			JsonObject file = fileList.get(i).getAsJsonObject();
-			String retMessage=processService.uploadFile(xtoken,workId,loginName,file);
+			retArray[i]=processService.uploadFile(xtoken,workId,loginName,file);
 		}
-		String retStr=null;
 
-		Wo wo = new Wo(retStr);
+		Wo wo = new Wo(result.getType().toString(),retArray);
 		result.setData(wo);
 		return result;
 	}
@@ -63,8 +65,19 @@ public class ActionUploadProcessFiles extends BaseAction {
 	 *
 	 */
 	public static class Wo extends WoId {
-		public Wo( String id ) {
-			setId( id );
+		public Wo( String type,UploadFileReturnEntity[] retArr ) {
+			this.setType(type);
+			this.setMessage(retArr);
+		}
+		String type;
+		UploadFileReturnEntity[] message;
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public void setMessage(UploadFileReturnEntity[] message) {
+			this.message = message;
 		}
 	}
 }

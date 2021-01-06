@@ -9,6 +9,7 @@ import com.x.pcpcustom.assemble.control.Business;
 import com.x.pcpcustom.assemble.control.action.ActionLogin;
 import com.x.pcpcustom.assemble.control.action.entity.CreateProcessReturnEntity;
 import com.x.pcpcustom.assemble.control.action.entity.LoginReturnEntity;
+import com.x.pcpcustom.assemble.control.action.entity.UploadFileReturnEntity;
 import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
 
 import java.util.HashMap;
@@ -123,11 +124,13 @@ public class ProcessService {
         return retData;
     }
     //上传文件
-    public Map<String,String> uploadFile(String xtoken,String workId,String loginName,JsonObject file) throws Exception {
+    public UploadFileReturnEntity uploadFile(String xtoken,String workId,String loginName,JsonObject file) throws Exception {
 
         String pathUrl=this.serverPathUrl;
         String functionUrl="/x_processplatform_assemble_surface/jaxrs/attachment/upload/work/";
         Map<String,String> retMap=new HashMap<>();
+        UploadFileReturnEntity uploadFileReturnEntity= new UploadFileReturnEntity();
+        String type="failure";
         try {
             String attachment = o2oaService.getAttachmentIdByWorkId(workId,xtoken);
             if(attachment==null || "".equals(attachment)){
@@ -150,8 +153,9 @@ public class ProcessService {
                     strurl, fileUrl,
                     "file", uploadParams, headMap);
             JSONObject jsonObject = JSONObject.parseObject(retStr);
-            String type=jsonObject.getString("type");
+            type=jsonObject.getString("type");
             String attachmentId=null;
+
 
             if("success".equals(type)){
                 JSONObject dataJson=jsonObject.getJSONObject("data");
@@ -160,13 +164,14 @@ public class ProcessService {
                 retMap.put("attachmentId",attachmentId);
             }else{
                 retMap.put("fileName",fileName);
-                retMap.put("type",type);
+                retMap.put("false",type);
             }
-            return retMap;
         } catch (Exception e) {
             e.printStackTrace();
-            retMap.put("massage",e.getMessage())
-            return retMap;
+            retMap.put("error",e.getMessage());
         }
+        uploadFileReturnEntity.setResultData(retMap);
+        uploadFileReturnEntity.setResultState(type);
+        return uploadFileReturnEntity;
     }
 }
