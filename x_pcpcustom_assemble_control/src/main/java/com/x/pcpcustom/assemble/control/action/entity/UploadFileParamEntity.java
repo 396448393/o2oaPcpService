@@ -17,7 +17,7 @@ public class UploadFileParamEntity {
     @FieldDescribe("xtoken")
     private String xtoken;
 
-    @FieldDescribe("表单数据")
+    @FieldDescribe("附件列表")
     private Map<String,String> [] fileList;
 
     public String getLoginName() {
