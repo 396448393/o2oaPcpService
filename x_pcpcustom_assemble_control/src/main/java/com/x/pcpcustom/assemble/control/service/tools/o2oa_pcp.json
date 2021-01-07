@@ -27,6 +27,6 @@
         "value": ["hcwang"]
     },
     "titleId":{
-        "value": ["subject"]
+        "value": "subject"
     }
 }
