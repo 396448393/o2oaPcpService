@@ -1,5 +1,8 @@
 package com.x.pcpcustom.assemble.control.action.entity;
 
+/**
+ * 创建流程方法返回值
+ */
 public class CreateProcessReturnEntity {
     private String message;
     private String workId;//工作id

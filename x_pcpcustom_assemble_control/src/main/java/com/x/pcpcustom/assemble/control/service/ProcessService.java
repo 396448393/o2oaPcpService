@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 流程服务方法
+ */
 public class ProcessService {
     //登陆获取token
     private static Logger logger = LoggerFactory.getLogger( ActionLogin.class );
@@ -68,8 +71,11 @@ public class ProcessService {
             throw new Exception("获取流程id为空！");
         }
         String path = "http://" + pathUrl + functionUrl+processId;
+        String titleId = o2oaService.getFormTitleId();
+        if(titleId==null || "".equals(titleId)){
+            throw new Exception("读取配置信息中表单标题id失败！");
+        }
         //组成请求参数
-        //JsonObject result = new JsonObject();
         JSONObject result =new JSONObject();
         result.put("latest", false);
         result.put("title", title);
@@ -77,7 +83,7 @@ public class ProcessService {
         //将参数中的表单项放入
         String formDataJsonStr=formData.toString();
         JSONObject department = JSON.parseObject(formDataJsonStr);
-        department.put("subject", title);
+        department.put(titleId, title);
         result.put("data", department);
         //请求创建流程
         String retStr =  HttpClientUtils.getInstance().sendPost2(path,xtoken,result.toJSONString());
@@ -96,19 +102,9 @@ public class ProcessService {
         retData.setMessage(retType);
         retData.setWorkId(workId);
         //读取配置信息中的单号id
-//        JsonArray jsonArray = o2oaService.getFormIdArrayById(processId);
-//        String serialNumberId=null;
-//        for(int i=0;i<jsonArray.size();i++){
-//            JsonObject jsonObj = jsonArray.get(i).getAsJsonObject();
-//            if(jsonObj.get("serialNumber")!=null){
-//                serialNumberId=jsonObj.get("serialNumber").getAsString();
-//            }
-//            if(serialNumberId!=null && !"".equals(serialNumberId)){
-//                break;
-//            }
-//        }
-//        if(serialNumberId==null || "".equals(serialNumberId)){
-//            throw new Exception("读取配置信息中的单号id失败或为空！");
+//        String serialId=o2oaService.getFormSerialId();
+//        if(serialId==null || "".equals(serialId)){
+//            throw new Exception("读取配置信息中单号Id失败！");
 //        }
         //获取表单单号
         String serial = o2oaService.getDataByWorkId(workId,"serial",xtoken);

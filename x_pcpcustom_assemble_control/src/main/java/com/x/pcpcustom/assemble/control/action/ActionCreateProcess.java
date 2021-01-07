@@ -26,7 +26,6 @@ public class ActionCreateProcess extends BaseAction {
 
 	public ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonObject jsonObject) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-//		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
 
 		String processName= jsonObject.get("processName").getAsString();
 		String title= jsonObject.get("title").getAsString();

@@ -1,5 +1,8 @@
 package com.x.pcpcustom.assemble.control.action.entity;
 
+/**
+ * 登陆方法返回值
+ */
 public class LoginReturnEntity {
     private String xtoken;//返回的xtoken值
     private String message;

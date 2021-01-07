@@ -2,6 +2,9 @@ package com.x.pcpcustom.assemble.control.action.entity;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
+/**
+ * 用户登陆方法参数
+ */
 public class LoginParamEntity {
     @FieldDescribe("用户名")
     private String loginUser;

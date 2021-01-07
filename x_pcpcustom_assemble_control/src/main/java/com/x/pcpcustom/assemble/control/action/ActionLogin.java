@@ -15,10 +15,9 @@ import com.x.pcpcustom.assemble.control.service.ProcessService;
 import com.x.pcpcustom.assemble.control.action.entity.LoginParamEntity;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
- * 示例数据信息保存服务
+ * 用户登陆
  */
 public class ActionLogin extends BaseAction {
 
@@ -26,14 +25,10 @@ public class ActionLogin extends BaseAction {
 
 	public ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonObject jsonObject) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		//Wi wi = this.convertToWrapIn((JsonElement) paramMap, Wi.class );
 
-		//String user= (String) wi.get("loginUser");
-		//String passWord= (String) wi.get("passWord");
 		String user = jsonObject.get("loginUser").getAsString();
 		String passWord = jsonObject.get("passWord").getAsString();
-		//logger.info("获取xtoken用户:",user);
-		//logger.info("获取xtoken密码:",passWord);
+
 		ProcessService processService=new ProcessService();
 		//获取xtoken
 		LoginReturnEntity retData=processService.getTockenToLogin(user,passWord);

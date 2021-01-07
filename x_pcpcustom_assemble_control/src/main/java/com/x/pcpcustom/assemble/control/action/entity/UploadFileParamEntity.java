@@ -4,6 +4,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import java.util.Map;
 
+/**
+ * 附件上传方法参数
+ */
 public class UploadFileParamEntity {
     @FieldDescribe("附件上传用户")
     private String loginName;
