@@ -26,7 +26,6 @@ import javax.ws.rs.core.MediaType;
 public class PcpLoginWithUserAndPassd extends StandardJaxrsAction{
 
 	private static Logger logger = LoggerFactory.getLogger( PcpLoginWithUserAndPassd.class );
-//	static final String  URL_SSOLOGIN="/x_organization_assemble_authentication/jaxrs/sso";
 
 	@JaxrsMethodDescribe( value = "根据用户名获取token", action = ActionLogin.class )
 	@POST
@@ -35,7 +34,6 @@ public class PcpLoginWithUserAndPassd extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void loginWithUser(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 							  @JaxrsParameterDescribe("登陆信息") JsonElement jsonElement) {
-		//logger.debug("参数数据：",jsonElement);
 
 		ActionResult<ActionLogin.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -44,7 +42,6 @@ public class PcpLoginWithUserAndPassd extends StandardJaxrsAction{
 
 			result = new ActionLogin().execute( request, effectivePerson,jsonElement.getAsJsonObject());
 
-			//result.setMessage(result.getType().toString());
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

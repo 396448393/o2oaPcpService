@@ -4,6 +4,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import java.util.Map;
 
+/**
+ * 创建流程方法参数
+ */
 public class CreateProcessParamEntity {
     @FieldDescribe("启动流程名")
     private String processName;

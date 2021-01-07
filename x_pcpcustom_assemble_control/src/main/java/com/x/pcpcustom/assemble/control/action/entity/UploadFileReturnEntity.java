@@ -2,6 +2,9 @@ package com.x.pcpcustom.assemble.control.action.entity;
 
 import java.util.Map;
 
+/**
+ * 附件上传方法返回
+ */
 public class UploadFileReturnEntity {
     private String resultState;
     private Map<String,String> resultData;

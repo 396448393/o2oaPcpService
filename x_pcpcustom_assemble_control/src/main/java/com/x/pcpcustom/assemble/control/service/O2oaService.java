@@ -8,23 +8,13 @@ import com.google.gson.JsonObject;
 import com.x.pcpcustom.assemble.control.Business;
 import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
 
-
+/**
+ * 调用系统内部接口和读取配置文件
+ */
 public class O2oaService {
     //根据workid获取流程单号
     public String getDataByWorkId(String workId,String dataId,String xtoken) throws Exception {
         String retData=null;
-//        String pathUrl=getPathUrl();
-//        String functionUrl="/x_processplatform_assemble_surface/jaxrs/data/work/";
-//        String path = "http://" + pathUrl + functionUrl+workId;
-//
-//        String retStr =  HttpClientUtils.getInstance().sendGet(path,xtoken);
-//        com.alibaba.fastjson.JSONObject jsonObject= JSON.parseObject(retStr);
-//        String retType=jsonObject.getString("type");
-//        if("success".equals(retType)){
-//            com.alibaba.fastjson.JSONObject jsonData=jsonObject.getJSONObject("data");
-//            com.alibaba.fastjson.JSONObject workData=jsonData.getJSONObject("$work");
-//            retData=workData.getString(dataId);
-//        }
         JSONObject retJson=this.getWorkInfoOrWorkDataByWorkId(workId,"work",xtoken);
         if(retJson!=null){
             retData=retJson.getString(dataId);
@@ -146,17 +136,19 @@ public class O2oaService {
         }
         return null;
     }
-    //读取配置信息中需要获取的表单标识数组
-//    public JsonArray getFormIdArrayById(String processId) throws Exception {
-//        JsonArray jsonArray = Business.readConfig("process").get("value").getAsJsonArray();
-//        for(int i=0;i<jsonArray.size();i++){
-//            JsonObject tempJsonObj=jsonArray.get(i).getAsJsonObject();
-//            String tempid=tempJsonObj.get("processId").getAsString();
-//            if(processId.equals(tempid)){
-//                return tempJsonObj.get("retFormData").getAsJsonArray();
-//            }
-//        }
-//        return null;
+    //读取配置信息中表单标题id
+    public String getFormTitleId() throws Exception {
+        String titleId=null;
+        titleId = Business.readConfig("titleId").get("value").getAsString();
+
+        return titleId;
+    }
+    //读取配置信息中表单单号id
+//    public String getFormSerialId() throws Exception {
+//        String serialId=null;
+//        serialId = Business.readConfig("serialId").get("value").getAsString();
+//
+//        return serialId;
 //    }
     /**
      * 分割字符串，如果开始位置大于字符串长度，返回空
