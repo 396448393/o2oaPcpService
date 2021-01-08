@@ -52,7 +52,7 @@ public class PcpServiceAction extends StandardJaxrsAction{
 
 	@JaxrsMethodDescribe( value = "上传表单附件接口", action = ActionUploadProcessFiles.class )
 	@POST
-	@Path("attachment/update")
+	@Path("attachment/upload")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
