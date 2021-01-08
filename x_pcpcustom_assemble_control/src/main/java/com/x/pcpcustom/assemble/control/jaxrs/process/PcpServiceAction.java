@@ -55,7 +55,7 @@ public class PcpServiceAction extends StandardJaxrsAction{
 	@Path("attachment/upload")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void upload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件信息") JsonElement jsonElement ) {
 		ActionResult<ActionUploadProcessFiles.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
