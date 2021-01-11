@@ -28,5 +28,8 @@
     },
     "titleId":{
         "value": "subject"
+    },
+    "serialId":{
+        "value": "serialNumber"
     }
 }

@@ -13,6 +13,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.pcpcustom.assemble.control.action.ActionCreateProcess;
+import com.x.pcpcustom.assemble.control.action.ActionProcessing;
 import com.x.pcpcustom.assemble.control.action.ActionUploadProcessFiles;
 
 
@@ -46,6 +47,7 @@ public class PcpServiceAction extends StandardJaxrsAction{
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
+			result.setMessage(e.toString());
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -61,6 +63,25 @@ public class PcpServiceAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUploadProcessFiles().execute( request, effectivePerson, jsonElement.getAsJsonObject() );
+//			result.setMessage(ret);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe( value = "流程待办流转接口", action = ActionProcessing.class )
+	@POST
+	@Path("work/processing")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void processing(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("流转信息") JsonElement jsonElement ) {
+		ActionResult<ActionProcessing.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionProcessing().execute( request, effectivePerson, jsonElement.getAsJsonObject() );
 //			result.setMessage(ret);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);

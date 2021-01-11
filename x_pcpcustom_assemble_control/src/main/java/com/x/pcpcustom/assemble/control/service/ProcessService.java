@@ -1,6 +1,7 @@
 package com.x.pcpcustom.assemble.control.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
 import com.x.base.core.project.logger.Logger;
@@ -9,6 +10,7 @@ import com.x.pcpcustom.assemble.control.Business;
 import com.x.pcpcustom.assemble.control.action.ActionLogin;
 import com.x.pcpcustom.assemble.control.action.entity.CreateProcessReturnEntity;
 import com.x.pcpcustom.assemble.control.action.entity.LoginReturnEntity;
+import com.x.pcpcustom.assemble.control.action.entity.ProcessingReturnEntity;
 import com.x.pcpcustom.assemble.control.action.entity.UploadFileReturnEntity;
 import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
 
@@ -102,10 +104,10 @@ public class ProcessService {
         retData.setMessage(retType);
         retData.setWorkId(workId);
         //读取配置信息中的单号id
-//        String serialId=o2oaService.getFormSerialId();
-//        if(serialId==null || "".equals(serialId)){
-//            throw new Exception("读取配置信息中单号Id失败！");
-//        }
+        String serialId=o2oaService.getFormSerialId();
+        if(serialId==null || "".equals(serialId)){
+            throw new Exception("读取配置信息中单号Id失败！");
+        }
         //获取表单单号
         String serial = o2oaService.getDataByWorkId(workId,"serial",xtoken);
         String serialNumber=null;
@@ -115,8 +117,15 @@ public class ProcessService {
             String str3=o2oaService.substring(serial,12,serial.length());
             serialNumber=str1+"-"+str2+"-"+str3;
         }
-        retData.setSerialNumber(serialNumber);
-
+        //保存单号
+        JSONObject saveDataRet=o2oaService.updataData(workId,serialId,serialNumber,xtoken);
+        String type=saveDataRet.getString("type");
+        if("success".equals(type)){
+            //返回单号
+            retData.setSerialNumber(serialNumber);
+        }else{
+            throw new Exception("保存单号失败！");
+        }
         return retData;
     }
     //上传文件
@@ -169,5 +178,33 @@ public class ProcessService {
         uploadFileReturnEntity.setResultData(retMap);
         uploadFileReturnEntity.setResultState(type);
         return uploadFileReturnEntity;
+    }
+
+    /**
+     * 流转流程
+     * @param workId
+     * @param routeName
+     * @param opinion
+     * @param xtoken
+     */
+    public ProcessingReturnEntity processing(String workId, String routeName, String opinion, String xtoken) throws Exception {
+
+        //获取待办id
+        JSONObject retIdObj=o2oaService.getIdByWorkId(workId,xtoken);
+        String taskId=null;
+        String type=retIdObj.getString("type");
+        if("success".equals(type)){
+            //返回单号
+
+
+        }else{
+            throw new Exception("获取待办id失败！");
+        }
+        //流转流程
+        if(taskId==null || "".equals(taskId)){
+            throw new Exception("待办为空！");
+        }
+        JSONObject jsonObject=o2oaService.toProcessing(taskId,routeName,xtoken,opinion);
+        return null;
     }
 }

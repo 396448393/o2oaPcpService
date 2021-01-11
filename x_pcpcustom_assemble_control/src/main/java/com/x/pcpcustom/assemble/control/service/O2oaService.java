@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import com.x.pcpcustom.assemble.control.Business;
 import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 调用系统内部接口和读取配置文件
  */
@@ -144,12 +146,12 @@ public class O2oaService {
         return titleId;
     }
     //读取配置信息中表单单号id
-//    public String getFormSerialId() throws Exception {
-//        String serialId=null;
-//        serialId = Business.readConfig("serialId").get("value").getAsString();
-//
-//        return serialId;
-//    }
+    public String getFormSerialId() throws Exception {
+        String serialId=null;
+        serialId = Business.readConfig("serialId").get("value").getAsString();
+
+        return serialId;
+    }
     /**
      * 分割字符串，如果开始位置大于字符串长度，返回空
      *
@@ -170,4 +172,77 @@ public class O2oaService {
             return str.substring(f, t);
         }
     }
+
+    /**
+     * 添加流程数据
+     * @param dataId
+     * @param dataValue
+     * @return
+     */
+    public JSONObject addData(String workId,String dataId,String dataValue,String xtoken) throws Exception {
+
+        String pathUrl=getPathUrl();
+        String functionUrl="/x_processplatform_assemble_surface/jaxrs/data/work/";
+        String path = "http://" + pathUrl + functionUrl+workId;
+        JSONObject result = new JSONObject();
+        result.put(dataId, dataValue);
+        String retStr =  HttpClientUtils.getInstance().sendPost2(path,xtoken,result.toJSONString());
+        JSONObject jsonObject= JSON.parseObject(retStr);
+        return jsonObject;
+    }
+    /**
+     * 更新流程数据
+     * @param dataId
+     * @param dataValue
+     * @return
+     */
+    public JSONObject updataData(String workId,String dataId,String dataValue,String xtoken) throws Exception {
+
+        String pathUrl=getPathUrl();
+        String functionUrl="/x_processplatform_assemble_surface/jaxrs/data/work/";
+        String path = "http://" + pathUrl + functionUrl+workId+"/mockputtopost";
+        JSONObject result = new JSONObject();
+        result.put(dataId, dataValue);
+        String retStr =  HttpClientUtils.getInstance().sendPost2(path,xtoken,result.toJSONString());
+        JSONObject jsonObject= JSON.parseObject(retStr);
+        return jsonObject;
+    }
+
+    /**
+     * 根据workId获取流程待办id
+     * @param workId
+     * @return
+     */
+    public JSONObject getIdByWorkId(String workId,String xtoken) throws Exception {
+
+        String pathUrl=getPathUrl();
+        String functionUrl="/x_processplatform_assemble_surface/jaxrs/task/list/work/";
+        String path = "http://" + pathUrl + functionUrl+workId;
+
+        String retStr =  HttpClientUtils.getInstance().sendGet(path,xtoken);
+        JSONObject jsonObject= JSON.parseObject(retStr);
+        return jsonObject;
+    }
+
+    /**
+     * 流转流程
+     * @param id
+     * @param routeName
+     * @param xtoken
+     * @param opinion
+     * @return
+     */
+    public JSONObject toProcessing(String id,String routeName,String xtoken,String opinion) throws Exception {
+
+        String pathUrl=getPathUrl();
+        String functionUrl="/x_processplatform_assemble_surface/jaxrs/task/"+id+"/processing";
+        String path = "http://" + pathUrl + functionUrl;
+        JSONObject result = new JSONObject();
+        result.put("routeName", routeName);
+        result.put("opinion", opinion);
+        String retStr =  HttpClientUtils.getInstance().sendPost2(path,xtoken,result.toJSONString());
+        JSONObject jsonObject= JSON.parseObject(retStr);
+        return jsonObject;
+    }
+
 }
