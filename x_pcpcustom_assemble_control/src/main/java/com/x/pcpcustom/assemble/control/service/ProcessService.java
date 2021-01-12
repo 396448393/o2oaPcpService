@@ -8,10 +8,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.pcpcustom.assemble.control.Business;
 import com.x.pcpcustom.assemble.control.action.ActionLogin;
-import com.x.pcpcustom.assemble.control.action.entity.CreateProcessReturnEntity;
-import com.x.pcpcustom.assemble.control.action.entity.LoginReturnEntity;
-import com.x.pcpcustom.assemble.control.action.entity.ProcessingReturnEntity;
-import com.x.pcpcustom.assemble.control.action.entity.UploadFileReturnEntity;
+import com.x.pcpcustom.assemble.control.action.entity.*;
 import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
 
 import java.util.HashMap;
@@ -25,11 +22,12 @@ public class ProcessService {
     //登陆获取token
     private static Logger logger = LoggerFactory.getLogger( ActionLogin.class );
 
-    private static O2oaService o2oaService = new O2oaService();
+    private O2oaService o2oaService;
 
     private String serverPathUrl=null;
 
     public ProcessService () throws Exception {
+        o2oaService = new O2oaService();
         this.serverPathUrl=o2oaService.getPathUrl();
     }
 
@@ -189,14 +187,17 @@ public class ProcessService {
      */
     public ProcessingReturnEntity processing(String workId, String routeName, String opinion, String xtoken) throws Exception {
 
+        ProcessingReturnEntity processingReturnEntity =new ProcessingReturnEntity();
         //获取待办id
         JSONObject retIdObj=o2oaService.getIdByWorkId(workId,xtoken);
         String taskId=null;
         String type=retIdObj.getString("type");
         if("success".equals(type)){
             //返回单号
-
-
+            JSONArray dataArr = retIdObj.getJSONArray("data");
+            if(dataArr.size()>0){
+                taskId=dataArr.getJSONObject(0).getString("id");
+            }
         }else{
             throw new Exception("获取待办id失败！");
         }
@@ -205,6 +206,49 @@ public class ProcessService {
             throw new Exception("待办为空！");
         }
         JSONObject jsonObject=o2oaService.toProcessing(taskId,routeName,xtoken,opinion);
-        return null;
+        type=jsonObject.getString("type");
+        if("success".equals(type)){
+            processingReturnEntity.setResultState(type);
+            JSONObject dataObj=jsonObject.getJSONObject("data");
+            JSONObject tempJson=dataObj;
+            if(dataObj != null){
+               JSONArray signalStack=dataObj.getJSONArray("signalStack");
+                if(signalStack.size()>0){
+                    JSONObject obj=signalStack.getJSONObject(0);
+                    String name=obj.getString("name");
+                    JSONArray identities=obj.getJSONObject("manualExecute").getJSONArray("identities");
+                    tempJson = new JSONObject();
+                    tempJson.put("name",name);
+                    tempJson.put("identities",identities);
+                }
+            }
+            processingReturnEntity.setResultData(tempJson);
+        }else{
+            processingReturnEntity.setResultState(type);
+            JSONObject temp = new JSONObject();
+            temp.put(type,"流程流转失败！");
+            processingReturnEntity.setResultData(temp);
+            throw new Exception("流程流转失败！");
+        }
+
+        return processingReturnEntity;
+    }
+    /**
+     * 保存数据
+     */
+    public UpdataProcessDataReturnEntity upProcessData(String workId, String dataId, String dataValue, String xtoken) throws Exception {
+        JSONObject saveDataRet=o2oaService.updataData(workId,dataId,dataValue,xtoken);
+        UpdataProcessDataReturnEntity updataProcessDataReturnEntity=new UpdataProcessDataReturnEntity();
+        String type=saveDataRet.getString("type");
+        updataProcessDataReturnEntity.setResultState(type);
+        if(!("success".equals(type))){
+            JSONObject temp = new JSONObject();
+            temp.put(type,"更新数据失败！");
+            updataProcessDataReturnEntity.setResultData(temp);
+            throw new Exception("更新数据失败！");
+        }
+
+        updataProcessDataReturnEntity.setResultData(saveDataRet.getJSONObject("data"));
+        return updataProcessDataReturnEntity;
     }
 }

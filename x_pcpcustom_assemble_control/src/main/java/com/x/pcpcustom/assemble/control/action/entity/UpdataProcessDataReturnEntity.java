@@ -2,12 +2,10 @@ package com.x.pcpcustom.assemble.control.action.entity;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.util.Map;
-
 /**
  * 创建流程方法返回值
  */
-public class ProcessingReturnEntity {
+public class UpdataProcessDataReturnEntity {
     private String resultState;
     private JSONObject resultData;
 

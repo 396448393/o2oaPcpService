@@ -10,33 +10,30 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.pcpcustom.assemble.control.action.entity.CreateProcessParamEntity;
-import com.x.pcpcustom.assemble.control.action.entity.CreateProcessReturnEntity;
-import com.x.pcpcustom.assemble.control.action.entity.ProcessingParamEntity;
-import com.x.pcpcustom.assemble.control.action.entity.ProcessingReturnEntity;
+import com.x.pcpcustom.assemble.control.action.entity.*;
 import com.x.pcpcustom.assemble.control.jaxrs.sample.BaseAction;
 import com.x.pcpcustom.assemble.control.service.ProcessService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * 创建流程
  */
-public class ActionProcessing extends BaseAction {
+public class ActionUpdataProcessData extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger( ActionProcessing.class );
+	private static  Logger logger = LoggerFactory.getLogger( ActionUpdataProcessData.class );
 
 	public ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonObject jsonObject) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 
-		String routeName= jsonObject.get("routeName").getAsString();
 		String workId= jsonObject.get("workId").getAsString();
+		String dataId= jsonObject.get("dataId").getAsString();
+		String dataValue= jsonObject.get("dataValue").getAsString();
 		String xtoken= jsonObject.get("xtoken").getAsString();
-		String opinion= jsonObject.get("opinion").getAsString();
+
 		ProcessService processService=new ProcessService();
 		//创建流程
-		ProcessingReturnEntity retData=processService.processing(workId,routeName,opinion,xtoken);
+		UpdataProcessDataReturnEntity retData=processService.upProcessData(workId,dataId,dataValue,xtoken);
 
 		Wo wo = new Wo(retData);
 		result.setData(wo);
@@ -47,9 +44,9 @@ public class ActionProcessing extends BaseAction {
 	 * 用于接受前端传入的对象型参数的帮助类
 	 *
 	 */
-	public static class Wi extends ProcessingParamEntity {
+	public static class Wi extends UpdataProcessDataParamEntity {
 
-		public static WrapCopier<Wi, ProcessingParamEntity> copier = WrapCopierFactory.wi( Wi.class, ProcessingParamEntity.class, null, JpaObject.FieldsUnmodify );
+		public static WrapCopier<Wi, UpdataProcessDataParamEntity> copier = WrapCopierFactory.wi( Wi.class, UpdataProcessDataParamEntity.class, null, JpaObject.FieldsUnmodify );
 
 	}
 
@@ -58,7 +55,7 @@ public class ActionProcessing extends BaseAction {
 	 *
 	 */
 	public static class Wo extends WoId {
-		public Wo( ProcessingReturnEntity ret ) {
+		public Wo( UpdataProcessDataReturnEntity ret ) {
 			this.setMessage(ret.getResultData());
 			this.setType(ret.getResultState());
 		}
