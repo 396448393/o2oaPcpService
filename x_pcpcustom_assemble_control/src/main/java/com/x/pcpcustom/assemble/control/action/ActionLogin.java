@@ -9,10 +9,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.pcpcustom.assemble.control.action.entity.LoginReturnEntity;
+import com.x.pcpcustom.assemble.control.entity.LoginReturnEntity;
 import com.x.pcpcustom.assemble.control.jaxrs.sample.BaseAction;
 import com.x.pcpcustom.assemble.control.service.ProcessService;
-import com.x.pcpcustom.assemble.control.action.entity.LoginParamEntity;
+import com.x.pcpcustom.assemble.control.entity.LoginParamEntity;
 
 import javax.servlet.http.HttpServletRequest;
 

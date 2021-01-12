@@ -1,11 +1,11 @@
-package com.x.pcpcustom.assemble.control.action.entity;
+package com.x.pcpcustom.assemble.control.entity;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
 import java.util.Map;
 
 /**
- * 附件上传方法参数
+ * 流程流转方法参数
  */
 public class ProcessingParamEntity {
     @FieldDescribe("提交路径")

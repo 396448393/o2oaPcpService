@@ -1,11 +1,11 @@
-package com.x.pcpcustom.assemble.control.action.entity;
+package com.x.pcpcustom.assemble.control.entity;
 
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.Map;
 
 /**
- * 创建流程方法返回值
+ * 流程流转方法返回值
  */
 public class ProcessingReturnEntity {
     private String resultState;

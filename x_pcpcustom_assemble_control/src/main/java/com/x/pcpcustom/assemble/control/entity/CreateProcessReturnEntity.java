@@ -1,4 +1,4 @@
-package com.x.pcpcustom.assemble.control.action.entity;
+package com.x.pcpcustom.assemble.control.entity;
 
 /**
  * 创建流程方法返回值

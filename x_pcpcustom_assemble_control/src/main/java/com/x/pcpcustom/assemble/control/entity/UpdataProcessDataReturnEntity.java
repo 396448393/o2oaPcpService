@@ -1,9 +1,9 @@
-package com.x.pcpcustom.assemble.control.action.entity;
+package com.x.pcpcustom.assemble.control.entity;
 
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * 创建流程方法返回值
+ * 流程数据更新方法返回值
  */
 public class UpdataProcessDataReturnEntity {
     private String resultState;

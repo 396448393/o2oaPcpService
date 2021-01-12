@@ -1,4 +1,4 @@
-package com.x.pcpcustom.assemble.control.action.entity;
+package com.x.pcpcustom.assemble.control.entity;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 

@@ -1,9 +1,9 @@
-package com.x.pcpcustom.assemble.control.action.entity;
+package com.x.pcpcustom.assemble.control.entity;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
- * 附件上传方法参数
+ * 流程数据更新方法参数
  */
 public class UpdataProcessDataParamEntity {
     @FieldDescribe("workId")

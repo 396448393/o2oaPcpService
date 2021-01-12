@@ -6,9 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.pcpcustom.assemble.control.Business;
 import com.x.pcpcustom.assemble.control.action.ActionLogin;
-import com.x.pcpcustom.assemble.control.action.entity.*;
+import com.x.pcpcustom.assemble.control.entity.*;
 import com.x.pcpcustom.assemble.control.service.tools.HttpClientUtils;
 
 import java.util.HashMap;
@@ -127,7 +126,7 @@ public class ProcessService {
         return retData;
     }
     //上传文件
-    public UploadFileReturnEntity uploadFile(String xtoken,String workId,String loginName,JsonObject file) throws Exception {
+    public UploadFileReturnEntity uploadFile(String xtoken, String workId, String loginName, JsonObject file) throws Exception {
 
         String pathUrl=this.serverPathUrl;
         String functionUrl="/x_processplatform_assemble_surface/jaxrs/attachment/upload/work/";
