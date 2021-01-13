@@ -32,7 +32,7 @@ public class ActionProcessing extends BaseAction {
 		String xtoken= jsonObject.get("xtoken").getAsString();
 		String opinion= jsonObject.get("opinion").getAsString();
 		ProcessService processService=new ProcessService();
-		//创建流程
+		//流转流程
 		ProcessingReturnEntity retData=processService.processing(workId,routeName,opinion,xtoken);
 
 		Wo wo = new Wo(retData);

@@ -196,6 +196,19 @@ public class ProcessService {
             JSONArray dataArr = retIdObj.getJSONArray("data");
             if(dataArr.size()>0){
                 taskId=dataArr.getJSONObject(0).getString("id");
+                String nowActivityName=dataArr.getJSONObject(0).getString("activityName");
+                JSONArray routeNameList=dataArr.getJSONObject(0).getJSONArray("routeNameList");
+                boolean havRoute=false;
+                for(int i=0;i<routeNameList.size();i++){
+                    if(routeName.equals(routeNameList.getString(i))){
+                        havRoute=true;
+                        break;
+                    }
+                }
+               if(!havRoute){
+                   String mag="当前待办环节为：["+nowActivityName+"],不存在["+routeName+"]路径！";
+                   throw new Exception(mag);
+               }
             }
         }else{
             throw new Exception("获取待办id失败！");
