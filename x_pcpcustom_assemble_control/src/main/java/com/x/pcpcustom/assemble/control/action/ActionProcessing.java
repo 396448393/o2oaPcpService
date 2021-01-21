@@ -56,18 +56,13 @@ public class ActionProcessing extends BaseAction {
 	 */
 	public static class Wo extends WoId {
 		public Wo( ProcessingReturnEntity ret ) {
-			this.setMessage(ret.getResultData());
 			this.setType(ret.getResultState());
 		}
 		private String type;
-		private JSONObject message;
 
 		public void setType(String type) {
 			this.type = type;
 		}
 
-		public void setMessage(JSONObject message) {
-			this.message = message;
-		}
 	}
 }

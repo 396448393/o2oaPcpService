@@ -220,26 +220,9 @@ public class ProcessService {
         JSONObject jsonObject=o2oaService.toProcessing(taskId,routeName,xtoken,opinion);
         type=jsonObject.getString("type");
         if("success".equals(type)){
-            processingReturnEntity.setResultState(type);
-            JSONObject dataObj=jsonObject.getJSONObject("data");
-            JSONObject tempJson=dataObj;
-            if(dataObj != null){
-               JSONArray signalStack=dataObj.getJSONArray("signalStack");
-                if(signalStack.size()>0){
-                    JSONObject obj=signalStack.getJSONObject(0);
-                    String name=obj.getString("name");
-                    JSONArray identities=obj.getJSONObject("manualExecute").getJSONArray("identities");
-                    tempJson = new JSONObject();
-                    tempJson.put("name",name);
-                    tempJson.put("identities",identities);
-                }
-            }
-            processingReturnEntity.setResultData(tempJson);
+            processingReturnEntity.setResultState(type);//返回请求执行结果
         }else{
             processingReturnEntity.setResultState(type);
-            JSONObject temp = new JSONObject();
-            temp.put(type,"流程流转失败！");
-            processingReturnEntity.setResultData(temp);
             throw new Exception("流程流转失败！");
         }
 

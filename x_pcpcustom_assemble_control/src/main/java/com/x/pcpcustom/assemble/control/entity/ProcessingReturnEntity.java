@@ -9,7 +9,6 @@ import java.util.Map;
  */
 public class ProcessingReturnEntity {
     private String resultState;
-    private JSONObject resultData;
 
     public String getResultState() {
         return resultState;
@@ -19,11 +18,4 @@ public class ProcessingReturnEntity {
         this.resultState = resultState;
     }
 
-    public JSONObject getResultData() {
-        return resultData;
-    }
-
-    public void setResultData(JSONObject resultData) {
-        this.resultData = resultData;
-    }
 }
